@@ -1,28 +1,41 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import { render, unmountComponentAtNode } from 'react-dom'
+import { getClockTime } from './lib'
+const { Component } = React
+const target = document.getElementById('root')
 
-class App extends Component {
-  render() {
+
+class Clock extends Component {
+  constructor(){
+    super()
+    this.state = getClockTime()
+  }
+  componentDidMount(){
+    console.log("Starting Clock")
+    this.thicking = setInterval(()=>
+        this.setState(getClockTime())
+    ,1000)
+  }
+
+  componentWillUnmount(){
+    clearInterval(this.thicking)
+    console.log("Stopping Clock")
+  }
+  render(){
+    const { hours, minutes, seconds, timeOfDay } = this.state
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+      <div className="clock">
+        <span>{hours}</span>
+        <span>:</span>
+        <span>{minutes}</span>
+        <span>:</span>
+        <span>{seconds}</span>
+        <span>{timeOfDay}</span>
+        <button onClick={this.props.onClose}>x</button>
       </div>
-    );
+    )
   }
 }
 
-export default App;
+
+export default Clock;
